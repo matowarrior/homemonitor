@@ -1,28 +1,31 @@
-from influxdb import InfluxDBClient
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 from ruuvitag_sensor.ruuvi import RuuviTagSensor
-import time
 import argparse
 
+database = "mydb"
 parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
 parser.add_argument('macaddr')
 parser.add_argument('location')
-parser.add_argument('cred')
 args =  parser.parse_args(['@args.txt'])
-
 macs = args.macaddr.split(",")
 locations= args.location.split(",")
-creds = args.cred.split(",")
+timeout_in_sec = 15
+
+client = InfluxDBClient(url="http://localhost:8086", token="my-token", org="my-org")
+write_api = client.write_api(write_options=SYNCHRONOUS)
+query_api = client.query_api()
+
 
 #Get broadcast data
-timeout_in_sec = 15
 datas = RuuviTagSensor.get_data_for_sensors(macs, timeout_in_sec)
 sensor1 = None
 sensor2 = None
 sensor3 = None
-#print("Raw data")
-#print(datas[macs[0]])
-#print(datas[macs[1]])
-#print(datas[macs[2]])
+print("Raw data")
+print(datas[macs[0]])
+print(datas[macs[1]])
+print(datas[macs[2]])
 try:
     sensor1 = datas[macs[0]]
 except Exception:
@@ -35,27 +38,10 @@ try:
     sensor3 = datas[macs[2]]
 except Exception:
     pass
-timestamp = time.time_ns()
-json_body = []
 i = -1
 for sensor in [sensor1, sensor2, sensor3]:
     i+=1
-    if sensor is None:
-        continue
-    json_body.append(
-    {
-        "measurement": "ruuvitag",
-        "tags": {
-            "mac": sensor["mac"],
-            "location":locations[i]
-        },
-        "time": timestamp,
-        "fields": {
-            "humidity": sensor["humidity"], "temperature": sensor["temperature"],
-            "pressure": sensor["pressure"], "battery": sensor["battery"]
-        }
-    }
-    )
-
-client = InfluxDBClient('localhost', 8086, creds[0], creds[1], 'mydb')
-client.write_points(json_body)
+    write_api.write(database, "my-org", {"measurement": "ruuvitag",
+                                            "tags": {"location": locations[i],"mac": macs[i]},
+                                            "fields": {"humidity": sensor["humidity"], "temperature": sensor["temperature"],
+                                                       "pressure": sensor["pressure"], "battery": sensor["battery"]}})
