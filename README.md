@@ -69,9 +69,7 @@ Use a browser to connect to your Raspberry Pi on port 3000. Default credentials 
 * Fill influxdb details: mydb
   
 To graph data create a dashboard and a new panel to query the data you want.
-##### Temperatue query example.
-![Temperature query](https://github.com/matowarrior/homemonitor/blob/main/screenshots/Query.png)
-More information on how to use [Grafana](https://grafana.com/docs/grafana/latest/datasources/influxdb/) with InfluxDB.
+My [Grafana configuration](Grafana.md) is shown on its own page. More information on how to use [Grafana](https://grafana.com/docs/grafana/latest/datasources/influxdb/) with InfluxDB.
 
 ### Deconz & Zigbee
 ```sh
