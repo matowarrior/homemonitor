@@ -104,11 +104,25 @@ https://pivpn.io/
 Install Dropbox
 sudo bash ./scripts/backup.sh 2 pi
 
-### Next Cloud
-* Had to make folder /volumes/nextcloud/html
-* this container will also install the recommended mariadb
-* Change passwords before starting the stack in:
-* docker-compose.yml and ./services/nextcloud/service.yml
-* compose up
-* create admin account :9321
-* Install takes forever. So wait.
+### Syncthing
+Local network backup with [Syncthing](https://syncthing.net/). Follow the installation guide. Run syncthing to generate config files.
+```sh
+syncthing
+```
+After syncthing has started press Ctrl + C to shut it down.
+
+Update the address in the gui section with the Pi address to allow LAN GUI access.
+```sh
+nano ~/.config/syncthing/config.xml
+```
+Setup syncthing as a service
+```sh
+sudo nano /lib/systemd/system/syncthing.service
+```
+Copy contents from [Syncthing github](https://github.com/syncthing/syncthing/blob/main/etc/linux-systemd/system/syncthing%40.service)
+Change the user to pi.
+Enable service
+```sh
+sudo systemctl enable syncthing
+```
+File sharing configuration can now be done in the GUI.
