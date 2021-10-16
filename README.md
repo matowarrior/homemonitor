@@ -99,30 +99,9 @@ https://pivpn.io/
 * curl -L https://install.pivpn.io | bash
 * pivpn -a
 
-### Dropbox
-./menu.sh
-Install Dropbox
-sudo bash ./scripts/backup.sh 2 pi
-
-### Syncthing
-Local network backup with [Syncthing](https://syncthing.net/). Follow the installation guide. Run syncthing to generate config files.
+### Monitoring the Pi
+Monitoring the Pi itself with [Prometheus Node Exporter](https://prometheus.io/docs/guides/node-exporter/). For the Pi 4 download the linux armv7 versions of prometheus and node exporter. You can verify the architecture version with the command: 
 ```sh
-syncthing
+cat /proc/cpuinfo
 ```
-After syncthing has started press Ctrl + C to shut it down.
-
-Update the address in the gui section with the Pi address to allow LAN GUI access.
-```sh
-nano ~/.config/syncthing/config.xml
-```
-Setup syncthing as a service
-```sh
-sudo nano /lib/systemd/system/syncthing.service
-```
-Copy contents from [Syncthing github](https://github.com/syncthing/syncthing/blob/main/etc/linux-systemd/system/syncthing%40.service)
-Change the user to pi.
-Enable service
-```sh
-sudo systemctl enable syncthing
-```
-File sharing configuration can now be done in the GUI.
+Setup is detailed in [Prometheus Node Exporter](https://prometheus.io/docs/guides/node-exporter/) site.
